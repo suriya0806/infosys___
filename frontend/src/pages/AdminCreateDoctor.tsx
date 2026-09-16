@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { UserPlus, User, Mail, Lock, AlertCircle, Trash2, Key, CheckCircle2, XCircle } from 'lucide-react';
+=======
+import React, { useState } from 'react';
+import { UserPlus, User, Mail, Lock, AlertCircle } from 'lucide-react';
+>>>>>>> team/main
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +16,7 @@ export default function AdminCreateDoctor() {
   const [docMsg, setDocMsg] = useState({ text: '', type: '' });
   const navigate = useNavigate();
 
+<<<<<<< HEAD
   const [doctors, setDoctors] = useState<any[]>([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(true);
   const [resettingId, setResettingId] = useState<string | null>(null);
@@ -20,6 +26,10 @@ export default function AdminCreateDoctor() {
   useEffect(() => {
     checkAdmin();
     fetchDoctors();
+=======
+  React.useEffect(() => {
+    checkAdmin();
+>>>>>>> team/main
   }, []);
 
   const checkAdmin = async () => {
@@ -40,6 +50,7 @@ export default function AdminCreateDoctor() {
     }
   };
 
+<<<<<<< HEAD
   const fetchDoctors = async () => {
     setIsLoadingDocs(true);
     try {
@@ -55,6 +66,8 @@ export default function AdminCreateDoctor() {
     setIsLoadingDocs(false);
   };
 
+=======
+>>>>>>> team/main
   const handleCreateDoctor = async (e: React.FormEvent) => {
     e.preventDefault();
     setDocCreating(true);
@@ -74,7 +87,10 @@ export default function AdminCreateDoctor() {
       if (response.ok) {
         setDocMsg({ text: 'Doctor created successfully!', type: 'success' });
         setDocName(''); setDocEmail(''); setDocPassword('');
+<<<<<<< HEAD
         fetchDoctors(); // Refresh list
+=======
+>>>>>>> team/main
       } else {
         setDocMsg({ text: data.detail || 'Failed to create doctor.', type: 'error' });
       }
@@ -84,6 +100,7 @@ export default function AdminCreateDoctor() {
     setDocCreating(false);
   };
 
+<<<<<<< HEAD
   const handleResetPassword = async (userId: string) => {
     if (!newPassword || newPassword.length < 6) {
       setActionMsg({ text: 'Password must be at least 6 characters', type: 'error' });
@@ -129,12 +146,15 @@ export default function AdminCreateDoctor() {
     setTimeout(() => setActionMsg({ text: '', type: '' }), 3000);
   };
 
+=======
+>>>>>>> team/main
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto flex-grow h-screen overflow-y-auto w-full bg-slate-50">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <UserPlus className="w-7 h-7 text-indigo-600" />
+<<<<<<< HEAD
             Manage Doctors
           </h1>
           <p className="text-slate-500 mt-1">Register and manage doctor accounts securely.</p>
@@ -143,6 +163,16 @@ export default function AdminCreateDoctor() {
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-10 max-w-2xl mx-auto mt-6">
         <h2 className="text-lg font-bold text-slate-900 mb-6">Create New Doctor</h2>
+=======
+            Create Doctor ID
+          </h1>
+          <p className="text-slate-500 mt-1">Register new doctor accounts securely.</p>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-10 max-w-2xl mx-auto mt-10">
+        <h2 className="text-lg font-bold text-slate-900 mb-6">Doctor Account Details</h2>
+>>>>>>> team/main
         
         <form onSubmit={handleCreateDoctor} className="space-y-5">
           <div>
@@ -171,6 +201,7 @@ export default function AdminCreateDoctor() {
             {docMsg.text}
           </div>
         )}
+<<<<<<< HEAD
       </div>
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-10 max-w-5xl mx-auto">
@@ -269,6 +300,11 @@ export default function AdminCreateDoctor() {
             </table>
           </div>
         )}
+=======
+        <p className="mt-6 text-xs text-slate-500 flex items-center gap-1 justify-center">
+          <AlertCircle className="w-3.5 h-3.5" /> Requires SUPABASE_SERVICE_ROLE_KEY to bypass authentication flows securely.
+        </p>
+>>>>>>> team/main
       </div>
     </div>
   );

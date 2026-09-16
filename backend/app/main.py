@@ -8,6 +8,7 @@ app = FastAPI(
     version=settings.VERSION,
 )
 
+<<<<<<< HEAD
 import time
 import logging
 from starlette.requests import Request
@@ -27,6 +28,8 @@ async def log_requests(request: Request, call_next):
     logger.info(f"[COMPLETED] {request.method} {request.url.path} - Status: {response.status_code} - Took: {process_time:.2f}ms")
     return response
 
+=======
+>>>>>>> team/main
 # Set all CORS enabled origins
 app.add_middleware(
     CORSMiddleware,
@@ -40,4 +43,8 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/health")
 def health_check():
+<<<<<<< HEAD
     return {"status": "ok", "message": "VitalGate AI Backend is running"}
+=======
+    return {"status": "ok", "message": "CareTriage AI Backend is running"}
+>>>>>>> team/main

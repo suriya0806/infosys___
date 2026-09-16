@@ -3,7 +3,11 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from app.agents.graph import triage_app
+<<<<<<< HEAD
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+=======
+from langchain_core.messages import HumanMessage, SystemMessage
+>>>>>>> team/main
 from langchain_groq import ChatGroq
 from app.core.config import settings
 from app.db import get_supabase
@@ -84,6 +88,7 @@ async def get_session_messages(session_id: str):
 @router.post("/chat", response_model=ChatResponse)
 async def chat_interaction(request: ChatRequest):
     try:
+<<<<<<< HEAD
         from langchain_groq import ChatGroq
         llm = ChatGroq(api_key=settings.GROQ_API_KEY, model_name="openai/gpt-oss-120b")
         
@@ -98,12 +103,18 @@ async def chat_interaction(request: ChatRequest):
             "- When a patient describes a symptom, acknowledge it with empathy before asking the next question.\n"
             "- Do NOT self-diagnose. You gather information; the triage report provides the assessment.\n"
         )
+=======
+        llm = ChatGroq(api_key=settings.GROQ_API_KEY, model_name="qwen/qwen3.6-27b")
+        
+        system_prompt = "You are CareTaker, a helpful, empathetic medical AI voice assistant. You are currently chatting with a patient to gather information about their symptoms before generating a formal triage report. Ask clarifying questions if needed. Be concise.\n\n"
+>>>>>>> team/main
         
         try:
             supabase = get_supabase()
             user_res = supabase.table("users").select("full_name").eq("id", request.patient_id).execute()
             if user_res.data and len(user_res.data) > 0:
                 patient_name = user_res.data[0].get("full_name", "Patient")
+<<<<<<< HEAD
                 first_name = patient_name.split()[0] if patient_name else "there"
                 system_prompt = (
                     f"You are VitalGate AI, an advanced clinical-grade medical assistant developed by VitalGate HealthTech. "
@@ -119,6 +130,9 @@ async def chat_interaction(request: ChatRequest):
                     f"- Do NOT self-diagnose. You gather information; the triage report provides the official assessment.\n"
                     f"- If asked about past conversations, confidently confirm you remember and summarize key points.\n"
                 )
+=======
+                system_prompt = f"You are CareTaker, a helpful, empathetic personalized medical AI voice assistant. You are currently chatting with {patient_name} to gather information about their symptoms before generating a formal triage report. You HAVE access to their past chat history and medical context from previous messages in this thread. If they ask if you remember them or have their past history, confidently confirm that you do and reference past context. Always address them by their first name to make the experience highly personalized. Ask clarifying questions if needed. Keep responses concise, conversational, and friendly.\n\n"
+>>>>>>> team/main
         
             if request.message:
                 data_to_insert = {
@@ -135,6 +149,7 @@ async def chat_interaction(request: ChatRequest):
         vision_context = ""
         if request.image_data:
             try:
+<<<<<<< HEAD
                 # Try Gemini vision first
                 from langchain_google_genai import ChatGoogleGenerativeAI
                 
@@ -193,6 +208,15 @@ DO NOT skip any question. DO NOT combine questions. Each must be on its own numb
                 except Exception as hf_err:
                     print(f"HuggingFace vision failed: {hf_err}")
                     vision_context = f"\n\n[The patient has uploaded a medical image that could not be automatically analyzed. Please ask the patient to describe their visible symptoms in detail.]"
+=======
+                from langchain_google_genai import ChatGoogleGenerativeAI
+                vision_llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", google_api_key=settings.GEMINI_API_KEY)
+                image_url = request.image_data if request.image_data.startswith("data:image") else f"data:image/jpeg;base64,{request.image_data}"
+                msg = vision_llm.invoke([HumanMessage(content=[{"type": "text", "text": "Describe this medical image briefly."}, {"type": "image_url", "image_url": {"url": image_url}}])])
+                vision_context = f"\n\n[Patient uploaded an image: {msg.content}]"
+            except Exception as e:
+                vision_context = f"\n\n[Patient uploaded an image but vision analysis failed]"
+>>>>>>> team/main
 
         messages = [SystemMessage(content=system_prompt)]
         
@@ -204,17 +228,22 @@ DO NOT skip any question. DO NOT combine questions. Each must be on its own numb
                         # Skip the current user message as we'll append it with vision_context below
                         if h.get('message') == request.message and h.get('sender') == 'user':
                             continue
+<<<<<<< HEAD
                         # Use AIMessage for AI responses (not SystemMessage) - critical for correct memory
                         if h.get('sender') == 'user':
                             messages.append(HumanMessage(content=h.get('message', '')))
                         else:
                             messages.append(AIMessage(content=h.get('message', '')))
+=======
+                        messages.append(HumanMessage(content=h.get('message', '')) if h.get('sender') == 'user' else SystemMessage(content=h.get('message', '')))
+>>>>>>> team/main
             except Exception:
                 pass
 
         messages.append(HumanMessage(content=request.message + vision_context))
         
         ai_response = llm.invoke(messages)
+<<<<<<< HEAD
         
         content = ai_response.content
         if isinstance(content, list):
@@ -227,6 +256,9 @@ DO NOT skip any question. DO NOT combine questions. Each must be on its own numb
             reply_text = clean_think_tags(" ".join(text_parts))
         else:
             reply_text = clean_think_tags(str(content))
+=======
+        reply_text = clean_think_tags(ai_response.content)
+>>>>>>> team/main
 
         try:
             supabase = get_supabase()
@@ -253,6 +285,7 @@ async def process_symptoms(request: SymptomRequest):
         if request.image_data:
             try:
                 from langchain_google_genai import ChatGoogleGenerativeAI
+<<<<<<< HEAD
                 image_url = request.image_data if request.image_data.startswith("data:image") else f"data:image/jpeg;base64,{request.image_data}"
                 msg = None
                 
@@ -268,6 +301,14 @@ async def process_symptoms(request: SymptomRequest):
                 vision_context = f"\n\n[Patient uploaded an image: {msg.content}]"
             except Exception as e:
                 print(f"Gemini vision failed entirely in triage: {e}")
+=======
+                vision_llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", google_api_key=settings.GEMINI_API_KEY)
+                image_url = request.image_data if request.image_data.startswith("data:image") else f"data:image/jpeg;base64,{request.image_data}"
+                msg = vision_llm.invoke([HumanMessage(content=[{"type": "text", "text": "Describe this medical image for clinical triage."}, {"type": "image_url", "image_url": {"url": image_url}}])])
+                vision_context = f"\n\n[Patient uploaded an image: {msg.content}]"
+            except Exception as e:
+                pass
+>>>>>>> team/main
                 
         initial_state = {
             "messages": [HumanMessage(content=request.message + vision_context)],
@@ -334,14 +375,21 @@ async def create_doctor(request: CreateDoctorRequest):
             "email_confirm": True
         })
         user_id = auth_res.user.id
+<<<<<<< HEAD
         admin_supabase.table("users").upsert({
             "id": user_id,
+=======
+        admin_supabase.table("users").insert({
+            "id": user_id,
+            "email": request.email,
+>>>>>>> team/main
             "full_name": request.full_name,
             "role": "doctor"
         }).execute()
         return {"message": "Doctor created successfully", "user_id": user_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+<<<<<<< HEAD
 
 @router.get("/admin/doctors")
 async def get_doctors():
@@ -391,3 +439,5 @@ async def revoke_doctor_access(user_id: str):
         return {"message": "Doctor access revoked"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+=======
+>>>>>>> team/main

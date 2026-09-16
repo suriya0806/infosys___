@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+<<<<<<< HEAD
 import { ShieldCheck, User, Stethoscope, Mail, Lock, UserPlus, LogIn, KeyRound, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 type AuthView = 'patient_login' | 'patient_signup' | 'forgot_password' | 'internal_login';
@@ -67,14 +68,34 @@ export default function Auth() {
     }
   };
 
+=======
+import { ShieldCheck, User, Stethoscope } from 'lucide-react';
+
+export default function Auth() {
+  const [isLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [activeRoleDemo, setActiveRoleDemo] = useState<string | null>(null);
+  const [role] = useState<'patient' | 'doctor'>('patient');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
+
+>>>>>>> team/main
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
+<<<<<<< HEAD
     setSuccessMsg('');
 
     try {
       if (view === 'patient_login' || view === 'internal_login') {
+=======
+
+    try {
+      if (isLogin) {
+>>>>>>> team/main
         // Log in
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
@@ -89,9 +110,14 @@ export default function Auth() {
         else if (userRole === 'doctor') navigate('/doctor');
         else navigate('/dashboard');
 
+<<<<<<< HEAD
       } else if (view === 'patient_signup') {
         // Sign up (Always defaults to 'patient' for external signups)
         const role = 'patient';
+=======
+      } else {
+        // Sign up
+>>>>>>> team/main
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -105,6 +131,10 @@ export default function Auth() {
         
         if (signUpError) throw signUpError;
 
+<<<<<<< HEAD
+=======
+        // Auto sign in if session was not established automatically
+>>>>>>> team/main
         let currentUser = data.user;
         if (!data.session) {
           const { data: signInData, error: autoSignInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -114,15 +144,30 @@ export default function Auth() {
         }
         
         if (currentUser) {
+<<<<<<< HEAD
+=======
+          // Insert role & name into public.users
+>>>>>>> team/main
           const { error: profileError } = await supabase.from('users').upsert({
             id: currentUser.id,
             role: role,
             full_name: email.split('@')[0]
           });
+<<<<<<< HEAD
           if (profileError) console.warn('Profile creation notice:', profileError.message);
         }
 
         navigate('/dashboard'); 
+=======
+          
+          if (profileError) {
+            console.warn('Profile creation notice:', profileError.message);
+          }
+        }
+
+        if (role === 'doctor') navigate('/doctor');
+        else navigate('/dashboard');
+>>>>>>> team/main
       }
     } catch (err: any) {
       console.error(err);
@@ -133,6 +178,7 @@ export default function Auth() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen w-full flex justify-center bg-slate-50 font-sans text-slate-900 overflow-y-auto py-8 sm:py-12 px-4 sm:px-6">
       <div className="w-full max-w-[450px] my-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
         
@@ -286,10 +332,57 @@ export default function Auth() {
               </div>
             </div>
           )}
+=======
+    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 font-sans text-slate-900 p-6 overflow-hidden">
+      <div className="w-full max-w-[450px] bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+        
+        <div className="flex justify-center mb-6">
+          <ShieldCheck className="w-12 h-12 text-blue-600" />
+        </div>
+        <h2 className="text-2xl font-bold text-center mb-2">
+          {isLogin ? 'Welcome Back' : 'Create an Account'}
+        </h2>
+        <p className="text-slate-500 mt-2">
+          {isLogin ? 'Enter your credentials to access your account' : 'Join CareTaker AI today'}
+        </p>
+
+        {errorMsg && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm font-medium">
+            {errorMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <input 
+              type="email" 
+              required
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <input 
+              type="password" 
+              required
+              minLength={6}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+>>>>>>> team/main
 
           <button 
             type="submit" 
             disabled={loading}
+<<<<<<< HEAD
             className={`w-full mt-2 py-3.5 text-white rounded-xl font-semibold shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 ${
               view === 'internal_login' ? (internalRole === 'doctor' ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/30' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30') : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30'
             }`}
@@ -340,6 +433,41 @@ export default function Auth() {
           </div>
         )}
 
+=======
+            className="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium shadow-md shadow-blue-500/20 transition-all disabled:opacity-50"
+          >
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+        </form>
+
+        {/* Role Selection Logins */}
+        <div className="mt-8 border-t border-slate-100 pt-6">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider text-center mb-3">Select Role to Continue</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveRoleDemo('patient')}
+              className={`flex-1 py-2.5 px-3 text-xs font-bold rounded-xl border transition-colors flex items-center justify-center gap-1.5 ${activeRoleDemo === 'patient' ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'}`}
+            >
+              <User className="w-4 h-4" /> Patient
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveRoleDemo('doctor')}
+              className={`flex-1 py-2.5 px-3 text-xs font-bold rounded-xl border transition-colors flex items-center justify-center gap-1.5 ${activeRoleDemo === 'doctor' ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'}`}
+            >
+              <Stethoscope className="w-4 h-4" /> Doctor
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveRoleDemo('admin')}
+              className={`flex-1 py-2.5 px-3 text-xs font-bold rounded-xl border transition-colors flex items-center justify-center gap-1.5 ${activeRoleDemo === 'admin' ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'}`}
+            >
+              <ShieldCheck className="w-4 h-4" /> Admin
+            </button>
+          </div>
+        </div>
+>>>>>>> team/main
       </div>
     </div>
   );
