@@ -1,6 +1,0 @@
-{
-    "python.defaultInterpreterPath": "e:\\healthagent\\backend\\venv\\Scripts\\python.exe",
-    "python.analysis.extraPaths": [
-        "e:\\healthagent\\backend"
-    ]
-}
